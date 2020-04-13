@@ -3,23 +3,22 @@
     section
       .container
         h1.ui-title-1 Home
-        input(
-            type="text"
-            placeholder="Введите название продукта ..."
-            v-model="productName"
-            @keyup.enter="addProduct"
-        )
-        .addButton
-          a.button--round.button--small.button.button-primary(
-            type='submit'
-            @click="addProduct"
-            ) Добавить
+        .product-add
+          input(
+              type="text"
+              placeholder="Введите название продукта ..."
+              v-model="productName"
+              @keyup.enter="addProduct"
+          )
+          .button.button--round.button-default(
+              @click="addProduct"
+              ) Добавить
     section
       .container
         .product-list
           .product-list__item(
               v-for="product in products"
-              :key="product.id"
+              :key="product.title"
           )
             .ui-checkbox-wrapper
                 input.ui-checkbox(
@@ -32,27 +31,14 @@
 </template>
 <script>
 export default {
+  computed: {
+    products () {
+      return this.$store.getters.getProducts
+    }
+  },
   data () {
     return {
-      productId: 4,
-      productName: '',
-      products: [
-        {
-          id: 1,
-          productName: 'Бананы',
-          isVisible: false
-        },
-        {
-          id: 2,
-          productName: 'Картофель',
-          isVisible: false
-        },
-        {
-          id: 3,
-          productName: 'Водка',
-          isVisible: false
-        }
-      ]
+      productName: ''
     }
   },
   methods: {
@@ -60,22 +46,28 @@ export default {
       if (this.productName === '') {
         return
       }
-      this.products.push({
-        id: this.productId,
+      const newProduct = {
         productName: this.productName,
         isVisible: false
-      })
+      }
+
+      this.$store.dispatch('addProduct', newProduct)
 
       // Reset
-      this.productId += 1
       this.productName = ''
     }
   }
 }
 </script>
 <style lang="stylus" scoped>
-.addButton
-  align-items left
+.product-add
+  display flex
+  justify-content space-between
+  align-items center
+  input
+     margin-bottom 0
+     height 42px
+     margin-right 10px
 
 .product-list__item
   display flex
