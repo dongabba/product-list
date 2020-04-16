@@ -77,15 +77,16 @@ export default {
       if (this.$v.$invalid) {
         this.submitStatus = 'ERROR'
       } else {
-        const user = {
-          email: this.email,
-          password: this.password
-        }
-        console.log(user)
         this.submitStatus = 'PENDING'
         setTimeout(() => {
           this.submitStatus = 'OK'
         }, 500)
+        const user = {
+          email: this.email,
+          password: this.password
+        }
+        this.$store.dispatch('addUser', user)
+        console.log(user)
       }
     }
   }
